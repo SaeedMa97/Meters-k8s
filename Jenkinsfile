@@ -1,20 +1,36 @@
 pipeline {
     agent any
 
+    environment {
+        SSH_USER = 'root'
+        SSH_HOST = '192.168.40.128'
+        REPO_URL = 'https://github.com/SaeedMa97/Meters-k8s.git'
+        K8S_DIR = 'Meters-k8s'
+    }
+
     stages {
         stage('Checkout') {
             steps {
-               script {
-                    sh 'ssh root@192.168.40.128 && git clone https://github.com/SaeedMa97/Meters-k8s.git'
+                script {
+                    sh """
+                        ssh  ${SSH_USER}@${SSH_HOST} "
+                            git clone ${REPO_URL}
+                        "
+                    """
                 }
-
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh 'ssh root@192.168.40.128 && cd Meters-k8s/ && kubectl apply -f meters-br-deployment.yaml && kubectl apply -f mosquitto-deployment.yaml'
+                    sh """
+                        ssh ${SSH_USER}@${SSH_HOST} "
+                            cd ${K8S_DIR} && \
+                            kubectl apply -f meters-br-deployment.yaml && \
+                            kubectl apply -f mosquitto-deployment.yaml
+                        "
+                    """
                 }
             }
         }
@@ -22,7 +38,13 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    sh 'ssh root@192.168.40.128 && kubectl get pods && kubectl get svc'
+                    // Verify pods and services are running
+                    sh """
+                        ssh  ${SSH_USER}@${SSH_HOST} "
+                            kubectl get pods && \
+                            kubectl get svc
+                        "
+                    """
                 }
             }
         }
