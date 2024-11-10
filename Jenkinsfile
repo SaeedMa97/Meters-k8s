@@ -5,8 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                script {
-                    sh 'ssh root@192.168.40.128'
-                    sh 'git clone https://github.com/SaeedMa97/Meters-k8s.git'
+                    sh 'ssh root@192.168.40.128 && git clone https://github.com/SaeedMa97/Meters-k8s.git'
                 }
 
             }
@@ -15,12 +14,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh 'ssh root@192.168.40.128'
-                    sh 'cd Meters-k8s/'
-                    sh 'kubectl apply -f meters-br-deployment.yaml'
-                    sh 'kubectl apply -f meters-br-service.yaml'
-                    sh 'kubectl apply -f mosquitto-deployment.yaml'
-                    sh 'kubectl apply -f mosquitto-service.yaml'
+                    sh 'ssh root@192.168.40.128 && cd Meters-k8s/ && kubectl apply -f meters-br-deployment.yaml && kubectl apply -f mosquitto-deployment.yaml'
                 }
             }
         }
@@ -28,9 +22,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    sh 'ssh root@192.168.40.128'
-                    sh 'kubectl get pods'
-                    sh 'kubectl get svc'
+                    sh 'ssh root@192.168.40.128 && kubectl get pods && kubectl get svc'
                 }
             }
         }
