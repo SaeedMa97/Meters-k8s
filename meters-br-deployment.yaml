@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: meters-br-deployment
+  labels:
+    app: meters-br
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: meters-br
+  template:
+    metadata:
+      labels:
+        app: meters-br
+    spec:
+      containers:
+        - name: meters-br
+          image: mohamed45/meters_br:latest
+          ports:
+            - containerPort: 8080
+
